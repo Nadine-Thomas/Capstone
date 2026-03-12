@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "https://capstone-mofx.onrender.com" }));
 
 const db = createConnection({
   host: process.env.DB_HOST,
@@ -14,6 +14,7 @@ const db = createConnection({
   port: process.env.DB_PORT || 3306,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  ssl: { rejectUnauthorized: false },
 });
 
 app.get("/api/books", (req, res) => {
