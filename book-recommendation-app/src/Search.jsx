@@ -18,7 +18,9 @@ function Search() {
   useEffect(() => {
     if (!query) return;
     setLoading(true);
-    fetch(`http://localhost:5000/api/books?q=${encodeURIComponent(query)}`)
+    fetch(
+      `https://book-recommendation-app-acbu.onrender.com/api/books?q=${encodeURIComponent(query)}`,
+    )
       .then((res) => res.json())
       .then((data) => {
         setRecommendations(data);
