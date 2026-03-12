@@ -1,0 +1,260 @@
+/* ── Layout ── */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Heading ── */
+.heading {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(28px, 4vw, 48px);
+  color: #e8d5f0;
+  margin: 0 0 12px 0;
+  text-shadow: 0 0 40px rgba(160, 100, 200, 0.5);
+}
+
+.subtitle {
+  font-size: 1.4rem;
+  color: #b89cc8;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6b4a8a;
+  font-size: 18px;
+  letter-spacing: 8px;
+  margin-bottom: 40px;
+  width: 80%;
+}
+
+.divider-line-left,
+.divider-line-right {
+  flex: 1;
+  height: 1px;
+  background: rgba(107, 74, 138, 0.4);
+}
+
+/* ── Search section ── */
+.search-section {
+  width: 100%;
+}
+
+.search-label {
+  display: block;
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #9b7ab8;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: rgba(30, 10, 45, 0.7);
+  border: 1px solid rgba(100, 50, 150, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.search-bar:focus-within {
+  box-shadow:
+    0 0 0 1px rgba(150, 80, 200, 0.4),
+    0 0 20px rgba(150, 80, 200, 0.15);
+}
+
+.search-icon {
+  padding: 4px 12px 8px 16px;
+  color: #7a5a9a;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.25rem;
+  color: #e8d5f0;
+  padding: 1.2rem 0;
+}
+
+.search-input::placeholder {
+  color: #5a3a72;
+}
+
+.search-btn {
+  margin: 8px;
+  padding: 0.9rem 1.6rem;
+  background: #2a1040;
+  color: #579ace;
+  border: 1px solid rgba(87, 154, 206, 0.3);
+  border-radius: 3px;
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.search-btn:hover {
+  background: #351550;
+}
+
+/* ── Results page ── */
+.results-container {
+  justify-content: flex-start;
+  padding-top: 160px;
+}
+
+.back-btn {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  background: transparent;
+  border: 1px solid rgba(100, 50, 150, 0.3);
+  color: #9b7ab8;
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.2rem;
+  border-radius: 3px;
+  z-index: 100;
+}
+
+.back-btn:hover {
+  color: #e8d5f0;
+  border-color: rgba(150, 80, 200, 0.5);
+}
+
+/* ── Status messages ── */
+.results-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9b7ab8;
+  font-family: "EB Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-top: 16px;
+}
+
+.error-text {
+  color: #c47a7a;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7a5a9a;
+  flex-shrink: 0;
+}
+
+.loading-dot {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+/* ── Results list ── */
+.results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(107, 74, 138, 0.2);
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.result-card:last-child {
+  border-bottom: none;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-number {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  color: #6b4a8a;
+  letter-spacing: 0.1em;
+  min-width: 24px;
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.result-title {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 1.15rem;
+  color: #e8d5f0;
+  font-weight: normal;
+}
+
+.result-score {
+  font-family: "Cinzel", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #579ace;
+}
