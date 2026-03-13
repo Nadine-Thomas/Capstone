@@ -41,7 +41,9 @@ function Search() {
 
         <div className="heading">
           <p className="search-label">Recommendations for</p>
-          <h1 className="title">"{query}"</h1>
+          <h1 className="title">
+            "{query?.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}"
+          </h1>
         </div>
 
         <div className="divider">
