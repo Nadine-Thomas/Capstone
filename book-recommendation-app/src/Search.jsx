@@ -71,11 +71,13 @@ function Search() {
                 className="result-card"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
-                <span className="result-number">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <span className="result-number">{String(i + 1)}</span>
                 <div className="result-info">
-                  <span className="result-title">{rec.recommended_title}</span>
+                  <span className="result-title">
+                    {rec.recommended_title
+                      ?.toLowerCase()
+                      .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  </span>
                   {rec.score != null && (
                     <span className="result-score">
                       {(rec.score * 100).toFixed(0)}% match
