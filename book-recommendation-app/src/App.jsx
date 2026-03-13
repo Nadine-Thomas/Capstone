@@ -48,17 +48,15 @@ function App() {
             Enter a book title and find similar books
           </label>
           <div className="search-bar">
-            <div className="search-input-row">
-              <span className="search-icon">⌕</span>
-              <input
-                className="search-input"
-                type="text"
-                placeholder="The Hunger Games, Jane Eyre, etc."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
+            <span className="search-icon">⌕</span>
+            <input
+              className="search-input"
+              type="text"
+              placeholder="The Hunger Games, Jane Eyre, etc."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
             <button className="search-btn" onClick={handleSearch}>
               Search
             </button>

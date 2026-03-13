@@ -86,48 +86,49 @@
   text-align: center;
 }
 
-/* Wraps the input row and the button. On mobile the button
-   drops below the input so it is never clipped. */
+/* Single-row flex container — button always sits inside the bar. */
 .search-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-}
-
-/* Inner row that holds the icon + text input, styled as
-   the visible "bar". overflow:hidden is removed so the
-   focus shadow is never clipped on any screen size. */
-.search-input-row {
   display: flex;
   align-items: center;
   background: rgba(30, 10, 45, 0.7);
   border: 1px solid rgba(100, 50, 150, 0.3);
   border-radius: 4px;
+  width: 100%;
 }
 
-.search-input-row:focus-within {
+/* Highlight the entire bar when any child element is focused */
+.search-bar:focus-within {
   box-shadow:
     0 0 0 1px rgba(150, 80, 200, 0.4),
     0 0 20px rgba(150, 80, 200, 0.15);
 }
 
+/* Search icon — hidden on very small screens to reclaim space */
 .search-icon {
-  padding: 4px 12px 8px 16px;
+  padding: 4px 8px 8px 12px;
   color: #7a5a9a;
-  font-size: 26px;
+  font-size: 22px;
   flex-shrink: 0;
+}
+
+@media (max-width: 360px) {
+  .search-icon {
+    display: none;
+  }
 }
 
 .search-input {
   flex: 1;
+  min-width: 0; /* prevents flex child from overflowing its container */
   border: none;
   outline: none;
   background: transparent;
   font-family: "EB Garamond", Georgia, serif;
-  font-size: 1.25rem;
+  /* clamp keeps the input readable on mobile without triggering iOS auto-zoom
+     (browsers zoom in when font-size < 16px) */
+  font-size: clamp(1rem, 3.5vw, 1.25rem);
   color: #e8d5f0;
-  padding: 1.2rem 0;
+  padding: 1rem 0;
 }
 
 .search-input::placeholder {
@@ -135,17 +136,20 @@
 }
 
 .search-btn {
-  margin: 8px;
-  padding: 0.9rem 1.6rem;
+  flex-shrink: 0;
+  margin: 6px;
+  /* Padding scales down on narrow screens so the button never overflows */
+  padding: 0.7rem clamp(0.6rem, 3vw, 1.4rem);
   background: #2a1040;
   color: #579ace;
   border: 1px solid rgba(87, 154, 206, 0.3);
   border-radius: 3px;
   font-family: "Cinzel", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
+  /* Font size and letter-spacing scale down on small screens */
+  font-size: clamp(0.65rem, 2vw, 0.8rem);
+  letter-spacing: clamp(0.05em, 1vw, 0.2em);
   text-transform: uppercase;
-  flex-shrink: 0;
+  white-space: nowrap; /* never wraps to a second line */
 }
 
 .search-btn:hover {
