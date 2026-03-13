@@ -7,6 +7,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), "../.env"))
 from db import get_db_connection
 
 def setup():
+    """Create database tables"""
     # Connect to the database 
     conn   = get_db_connection()
     cursor = conn.cursor()

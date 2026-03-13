@@ -1,3 +1,11 @@
+/* 
+   index.css — Global base styles
+   Applied once at the document level; component-
+   specific styles live in App.css.
+*/
+
+/* Box-sizing reset — prevents padding/border from
+   expanding element dimensions unexpectedly. */
 *,
 *::before,
 *::after {
@@ -12,6 +20,8 @@ body {
   width: 100%;
 }
 
+/* Deep purple background with subtle radial vignettes
+   to create atmosphere without heavy image assets. */
 body {
   background-color: #0d0618;
   background-image:
@@ -32,6 +42,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Allow the app shell to fill the full viewport height. */
 #root {
   height: 100%;
   width: 100%;
@@ -39,6 +50,8 @@ body {
   flex-direction: column;
 }
 
+/* Shared button transition — individual components
+   override colours as needed. */
 button {
   cursor: pointer;
   transition:
