@@ -1,3 +1,11 @@
+/**
+ * Search.jsx — Results page of the Book Recommendation App.
+ *
+ * Reads the search query from the URL (?q=...), fetches book recommendations
+ * from the backend API, and displays them as an animated ordered list.
+ * Handles loading, error, and empty-results states.
+ */
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -15,6 +23,7 @@ function Search() {
     document.title = "Recommendations";
   }, []);
 
+  // Fetch recommendations whenever the query changes
   useEffect(() => {
     if (!query) return;
     setLoading(true);
@@ -42,7 +51,8 @@ function Search() {
         <div className="heading">
           <p className="search-label">Recommendations for</p>
           <h1 className="title">
-            "{query?.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}"
+            {/* Display the entered book title capitalized */}"
+            {query?.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}"
           </h1>
         </div>
 
@@ -52,6 +62,7 @@ function Search() {
           <div className="divider-line-right" />
         </div>
 
+        {/* Loading state */}
         {loading && (
           <div className="results-status">
             <span className="status-dot loading-dot" />
@@ -59,12 +70,15 @@ function Search() {
           </div>
         )}
 
+        {/* Error state */}
         {error && <div className="results-status error-text">{error}</div>}
 
+        {/* Empty state */}
         {!loading && !error && recommendations.length === 0 && (
           <div className="results-status">No recommendations found.</div>
         )}
 
+        {/* Results list, each card fades in with a staggered delay */}
         {!loading && recommendations.length > 0 && (
           <ol className="results-list">
             {recommendations.map((rec, i) => (

@@ -1,3 +1,10 @@
+/**
+ * App.jsx — Home page of the Book Recommendation App.
+ *
+ * Renders the landing page with a search input. On submit, navigates to
+ * the /search route with the query encoded as a URL parameter (?q=...).
+ */
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
@@ -6,6 +13,7 @@ function App() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
+  // Navigate to the search results page, ignoring blank input
   const handleSearch = () => {
     const trimmed = query.trim();
     if (trimmed) {
@@ -13,6 +21,7 @@ function App() {
     }
   };
 
+  // Allow submitting the search with the enter key
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
   };
@@ -39,15 +48,17 @@ function App() {
             Enter a book title and find similar books
           </label>
           <div className="search-bar">
-            <span className="search-icon">⌕</span>
-            <input
-              className="search-input"
-              type="text"
-              placeholder="The Giver, Jane Eyre, etc."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
+            <div className="search-input-row">
+              <span className="search-icon">⌕</span>
+              <input
+                className="search-input"
+                type="text"
+                placeholder="The Hunger Games, Jane Eyre, etc."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
             <button className="search-btn" onClick={handleSearch}>
               Search
             </button>

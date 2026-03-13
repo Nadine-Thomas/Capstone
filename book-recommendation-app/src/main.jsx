@@ -1,3 +1,12 @@
+/**
+ * main.jsx — Application entry point.
+ *
+ * Mounts the React app into the #root DOM element and defines the two
+ * top-level routes:
+ *   / for App  (home / search input)
+ *   /search for Search (results page, expects ?q= query param)
+ */
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";

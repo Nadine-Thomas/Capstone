@@ -1,4 +1,11 @@
-/* ── Layout ── */
+/* 
+   App.css — Component styles for App and Search.
+   Sections: Layout, Heading, Divider, Search, Results page, Status messages,
+   Results list
+*/
+
+/* ── Layout ──────────────────────────────────── */
+
 .app {
   min-height: 100vh;
   display: flex;
@@ -19,7 +26,8 @@
   width: 100%;
 }
 
-/* ── Heading ── */
+/* ── Heading ─────────────────────────────────── */
+
 .heading {
   text-align: center;
   margin-bottom: 32px;
@@ -40,7 +48,8 @@
   margin: 0;
 }
 
-/* ── Divider ── */
+/* ── Divider ─────────────────────────────────── */
+
 .divider {
   display: flex;
   align-items: center;
@@ -59,11 +68,13 @@
   background: rgba(107, 74, 138, 0.4);
 }
 
-/* ── Search section ── */
+/* ── Search section ──────────────────────────── */
+
 .search-section {
   width: 100%;
 }
 
+/* Uppercase label above the search bar */
 .search-label {
   display: block;
   font-family: "Cinzel", serif;
@@ -75,16 +86,27 @@
   text-align: center;
 }
 
+/* Wraps the input row and the button. On mobile the button
+   drops below the input so it is never clipped. */
 .search-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Inner row that holds the icon + text input, styled as
+   the visible "bar". overflow:hidden is removed so the
+   focus shadow is never clipped on any screen size. */
+.search-input-row {
   display: flex;
   align-items: center;
   background: rgba(30, 10, 45, 0.7);
   border: 1px solid rgba(100, 50, 150, 0.3);
   border-radius: 4px;
-  overflow: hidden;
 }
 
-.search-bar:focus-within {
+.search-input-row:focus-within {
   box-shadow:
     0 0 0 1px rgba(150, 80, 200, 0.4),
     0 0 20px rgba(150, 80, 200, 0.15);
@@ -130,12 +152,15 @@
   background: #351550;
 }
 
-/* ── Results page ── */
+/* ── Results page ────────────────────────────── */
+
+/* Push content below the fixed back button */
 .results-container {
   justify-content: flex-start;
   padding-top: 160px;
 }
 
+/* Fixed position lets it remain visible while scrolling */
 .back-btn {
   position: fixed;
   top: 24px;
@@ -157,7 +182,9 @@
   border-color: rgba(150, 80, 200, 0.5);
 }
 
-/* ── Status messages ── */
+/* ── Status messages ─────────────────────────── */
+
+/* Shared layout for loading / error / empty states */
 .results-status {
   display: flex;
   align-items: center;
@@ -173,6 +200,7 @@
   color: #c47a7a;
 }
 
+/* Small dot indicator shown alongside the loading message */
 .status-dot {
   width: 6px;
   height: 6px;
@@ -197,7 +225,8 @@
   }
 }
 
-/* ── Results list ── */
+/* ── Results list ────────────────────────────── */
+
 .results-list {
   list-style: none;
   padding: 0;
@@ -205,6 +234,7 @@
   width: 100%;
 }
 
+/* Each card slides up and fades in; delay is set inline per item */
 .result-card {
   display: flex;
   align-items: center;
@@ -251,6 +281,7 @@
   font-weight: normal;
 }
 
+/* Similarity percentage displayed below the book title */
 .result-score {
   font-family: "Cinzel", serif;
   font-size: 0.65rem;

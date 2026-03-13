@@ -5,6 +5,7 @@ import os
 load_dotenv(os.path.join(os.path.dirname(__file__), "../.env"))
 
 def get_db_connection():
+    """Establish connection to the database"""
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
         user=os.getenv("DB_USER"),

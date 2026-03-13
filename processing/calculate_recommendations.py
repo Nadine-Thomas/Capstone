@@ -154,7 +154,7 @@ def run(books_file, reviews_file, output_file):
     print("Building per-group review corpus...")
     book_reviews = build_book_corpus(reviews, book_id_to_group)
 
-    print(f"Computing recommendations")
+    print(f"Computing recommendations...")
     df = compute_recommendations(book_reviews, group_id_to_title, group_id_to_author, TOP_K, CHUNK_SIZE)
 
     df.to_csv(output_file, index=False)
