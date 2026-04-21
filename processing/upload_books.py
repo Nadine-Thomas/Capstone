@@ -14,32 +14,48 @@ def upload_books(books_file, batch_size):
     # Initialize group_id column
     books["group_id"] = books.index.astype(str)
 
-    # One row per edition
+    works_rows = [
+        (row.group_id, row.title, row.author_id)
+        for row in books.itertuples(index=False)
+    ]
+
+    # Eplode the book_ids list into separate rows for the editions table
     books_exploded = books.explode("book_ids").rename(columns={"book_ids": "book_id"})
     books_exploded["book_id"] = books_exploded["book_id"].astype(str)
 
-    book_id_to_title  = books_exploded.set_index("book_id")["title"].to_dict()
-    book_id_to_group  = books_exploded.set_index("book_id")["group_id"].to_dict()
-    book_id_to_author = books_exploded.set_index("book_id")["author_id"].to_dict()
-
-    rows = [
-        (bid, book_id_to_title[bid], book_id_to_group[bid], book_id_to_author[bid])
-        for bid in book_id_to_title
+    editions_rows = [
+        (row.book_id, row.group_id)
+        for row in books_exploded.itertuples(index=False)
+        if row.book_id  # skip any empty book_id values
     ]
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        for i in range(0, len(rows), batch_size):
-            batch = rows[i:i + batch_size]
+        # First insert works (one row per work, with group_id as primary key).
+        for i in range(0, len(works_rows), batch_size):
+            batch = works_rows[i:i + batch_size]
             cursor.executemany(
-                "INSERT IGNORE INTO books (book_id, title, group_id, author_id) "
-                "VALUES (%s, %s, %s, %s)",
+                "INSERT IGNORE INTO works (group_id, title, author_id) "
+                "VALUES (%s, %s, %s)",
                 batch,
             )
             conn.commit()
-            print(f"  Books inserted: {min(i + batch_size, len(rows)):,}/{len(rows):,}")
+            print(f"  Works inserted: {min(i + batch_size, len(works_rows)):,}/{len(works_rows):,}")
+    
+        # Then insert editions.
+        for i in range(0, len(editions_rows), batch_size):
+            batch = editions_rows[i:i + batch_size]
+            cursor.executemany(
+                "INSERT IGNORE INTO editions (book_id, group_id) "
+                "VALUES (%s, %s)",
+                batch,
+            )
+            conn.commit()
+            print(f"  Editions inserted: {min(i + batch_size, len(editions_rows)):,}"
+                  f"/{len(editions_rows):,}")
+ 
     except Exception as e:
         conn.rollback()
         raise RuntimeError("Upload failed") from e

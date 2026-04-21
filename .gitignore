@@ -18,8 +18,8 @@ node_modules/
 dist/
 
 # Data files
-
 goodreads_books_cleaned.json.gz
 goodreads_books.json.gz
 goodreads_reviews_cleaned.json.gz
 goodreads_reviews_dedup.json.gz
+recommendations.csv

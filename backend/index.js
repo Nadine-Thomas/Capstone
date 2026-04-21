@@ -20,16 +20,16 @@ const db = createConnection({
 app.get("/api/books", (req, res) => {
   const { q } = req.query;
 
-  if (!q) {
+  if (!q || typeof q !== "string" || q.trim().length === 0) {
     return res.status(400).json({ error: "Missing query parameter" });
   }
 
-  // Step 1: Find the book
+  // Step 1: Find the work by the title
   db.query(
-    "SELECT group_id FROM books WHERE title LIKE ? LIMIT 1",
+    "SELECT group_id FROM works WHERE title LIKE ? LIMIT 1",
     [`%${q}%`],
     (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
+      if (err) return res.status(500).json({ error: "Database error" });
 
       if (rows.length === 0) {
         return res.json([]);
@@ -46,7 +46,7 @@ app.get("/api/books", (req, res) => {
          LIMIT 5`,
         [groupId],
         (err, recommendations) => {
-          if (err) return res.status(500).json({ error: err.message });
+          if (err) return res.status(500).json({ error: "Database error" });
 
           res.json(recommendations);
         },
