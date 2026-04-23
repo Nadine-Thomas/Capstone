@@ -89,11 +89,7 @@ function Search() {
               >
                 <span className="result-number">{String(i + 1)}</span>
                 <div className="result-info">
-                  <span className="result-title">
-                    {rec.recommended_title
-                      ?.toLowerCase()
-                      .replace(/\b\w/g, (char) => char.toUpperCase())}
-                  </span>
+                  <span className="result-title">{rec.recommended_title}</span>
                   {rec.score != null && (
                     <span className="result-score">
                       {(rec.score * 100).toFixed(0)}% match

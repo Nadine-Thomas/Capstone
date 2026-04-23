@@ -142,14 +142,17 @@ def run(books_file, reviews_file, output_file):
     group_id_to_title = books.set_index("group_id")["title"].to_dict()
     group_id_to_author = books.set_index("group_id")["author_id"].to_dict()
 
-    # Restrict to the top N most-reviewed book_ids to keep computation tractable
-    top_book_ids = (
-        reviews.groupby("book_id")["review_text"]
+    # Map book_ids to group_ids first
+    reviews["group_id"] = reviews["book_id"].map(book_id_to_group)
+
+    # Filter to top groups by total review count across all their editions
+    top_group_ids = (
+        reviews.groupby("group_id")["review_text"]
         .count()
         .nlargest(TOP_K_BOOKS)
         .index
     )
-    reviews = reviews[reviews["book_id"].isin(top_book_ids)]
+    reviews = reviews[reviews["group_id"].isin(top_group_ids)]
 
     print("Building per-group review corpus...")
     book_reviews = build_book_corpus(reviews, book_id_to_group)

@@ -19,25 +19,36 @@ const db = createConnection({
 
 app.get("/api/books", (req, res) => {
   const { q } = req.query;
+  if (!q) return res.status(400).json({ error: "Missing query" });
 
-  if (!q || typeof q !== "string" || q.trim().length === 0) {
-    return res.status(400).json({ error: "Missing query parameter" });
-  }
+  const searchTerm = q.trim();
 
-  // Step 1: Find the work by the title
   db.query(
-    "SELECT group_id FROM works WHERE title LIKE ? LIMIT 1",
-    [`%${q}%`],
+    `SELECT DISTINCT w.group_id, w.title 
+     FROM works w
+     INNER JOIN recommendations r ON w.group_id = r.group_id
+     WHERE w.title LIKE ? 
+     ORDER BY 
+       // 1. Exact matches get top priority
+       CASE WHEN w.title = ? THEN 0 
+            // 2. Titles starting with the search term (e.g., "Jane Eyre (Deluxe)") */
+            WHEN w.title LIKE ? THEN 1 
+            // 3. Titles containing the search term elsewhere
+            ELSE 2 
+       END,
+       // 4. Tie-breaker: Pick the shortest title (prevents picking long subtitles)
+       LENGTH(w.title) ASC
+     LIMIT 1`,
+    [`%${searchTerm}%`, searchTerm, `${searchTerm}%`],
     (err, rows) => {
       if (err) return res.status(500).json({ error: "Database error" });
 
-      if (rows.length === 0) {
-        return res.json([]);
-      }
+      // If no recommendations exist for any title matching "Jane Eyre", return empty
+      if (rows.length === 0) return res.json([]);
 
       const groupId = rows[0].group_id;
 
-      // Step 2: Get recommendations
+      // Proceed to fetch the 5 recommendations for this specific group_id...
       db.query(
         `SELECT recommended_title, score
          FROM recommendations
@@ -47,7 +58,6 @@ app.get("/api/books", (req, res) => {
         [groupId],
         (err, recommendations) => {
           if (err) return res.status(500).json({ error: "Database error" });
-
           res.json(recommendations);
         },
       );
