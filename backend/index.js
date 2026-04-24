@@ -1,20 +1,47 @@
 import express from "express";
-import { createConnection } from "mysql2";
+import { createPool } from "mysql2";
 import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });
 
 const app = express();
-app.use(cors({ origin: "https://capstone-mofx.onrender.com" }));
 
-const db = createConnection({
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:5173", "https://capstone-mofx.onrender.com"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  }),
+);
+
+const pool = createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   port: process.env.DB_PORT || 3306,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   ssl: { rejectUnauthorized: false },
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("MySQL connection failed:", err);
+    process.exit(1);
+  }
+  console.log("MySQL connected!");
+  connection.release();
 });
 
 app.get("/api/books", (req, res) => {
@@ -23,33 +50,31 @@ app.get("/api/books", (req, res) => {
 
   const searchTerm = q.trim();
 
-  db.query(
-    `SELECT DISTINCT w.group_id, w.title 
+  pool.query(
+    `SELECT DISTINCT w.group_id, w.title
      FROM works w
      INNER JOIN recommendations r ON w.group_id = r.group_id
-     WHERE w.title LIKE ? 
-     ORDER BY 
-       // 1. Exact matches get top priority
-       CASE WHEN w.title = ? THEN 0 
-            // 2. Titles starting with the search term (e.g., "Jane Eyre (Deluxe)") */
-            WHEN w.title LIKE ? THEN 1 
-            // 3. Titles containing the search term elsewhere
-            ELSE 2 
+     WHERE w.title LIKE ?
+     ORDER BY
+       CASE
+         WHEN w.title = ?        THEN 0
+         WHEN w.title LIKE ?     THEN 1
+         ELSE                         2
        END,
-       // 4. Tie-breaker: Pick the shortest title (prevents picking long subtitles)
        LENGTH(w.title) ASC
      LIMIT 1`,
     [`%${searchTerm}%`, searchTerm, `${searchTerm}%`],
     (err, rows) => {
-      if (err) return res.status(500).json({ error: "Database error" });
+      if (err) {
+        console.error("DB error (title lookup):", err);
+        return res.status(500).json({ error: "Database error" });
+      }
 
-      // If no recommendations exist for any title matching "Jane Eyre", return empty
       if (rows.length === 0) return res.json([]);
 
       const groupId = rows[0].group_id;
 
-      // Proceed to fetch the 5 recommendations for this specific group_id...
-      db.query(
+      pool.query(
         `SELECT recommended_title, score
          FROM recommendations
          WHERE group_id = ?
@@ -57,7 +82,10 @@ app.get("/api/books", (req, res) => {
          LIMIT 5`,
         [groupId],
         (err, recommendations) => {
-          if (err) return res.status(500).json({ error: "Database error" });
+          if (err) {
+            console.error("DB error (recommendations):", err);
+            return res.status(500).json({ error: "Database error" });
+          }
           res.json(recommendations);
         },
       );
@@ -65,14 +93,7 @@ app.get("/api/books", (req, res) => {
   );
 });
 
-db.connect((err) => {
-  if (err) {
-    console.log("MySQL Connection Error:", err);
-  } else {
-    console.log("MySQL Connected!");
-  }
-});
-
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
